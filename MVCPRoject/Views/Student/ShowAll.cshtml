@@ -1,8 +1,8 @@
-﻿
+﻿@model List<Student>
 @{
     ViewData["Title"] = "ShowAll";
 }
-<!---->
+<!--Lossly Type View-->
 <h1>ShowAll</h1>
 <table class="table table-bordered table-hover">
     <tr>
@@ -15,7 +15,12 @@
         <tr>
             <td>@item.ID</td>
             <td>@item.Name</td>
-            <td>@item.ImageURl</td>
+            <td>
+                <img src="/Images/@item.ImageURl" style="width:100px" />
+            </td>
+            <td>
+                <a href="/Student/DEtails/@item.ID">Details</a>
+            </td>
         </tr>
     }
 </table>
