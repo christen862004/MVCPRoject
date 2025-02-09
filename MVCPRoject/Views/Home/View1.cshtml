@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "View1";
+}
+
+<h1>View1</h1>
+<h2>Welcome From My First View</h2>
+
+<style>  
+    h1{
+        color:red;
+        background-color:yellow;
+
+    }
+</style>
+<script>
+    console.log("ay hage");
+</script>
+<!--Razor Synatx : server side code ==>html -->
+<!--block of code-->
+@{
+    //Valid c#
+    int x = 10;
+    int y = x+10;
+}
+<!--Inline Statment-->
+<h3>@(x+y)</h3>
+
+<!--Condition Statment-->
+@if (x > y)
+{
+    <h2>X greater than Y</h2>
+}
+else
+{
+    <h2>X=@x Less than Y=@y</h2>
+}
+
+<!--Looping-->
+<ul>
+@for(int i = 0; i < 10; i++)
+{
+        if (i % 2 == 0)
+        {
+            <li>@i</li>
+        }
+}
+</ul>

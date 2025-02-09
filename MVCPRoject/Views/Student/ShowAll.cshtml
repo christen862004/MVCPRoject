@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewData["Title"] = "ShowAll";
+}
+
+<h1>ShowAll</h1>
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Image</th>
+    </tr>
+    @foreach (Student item in Model)
+    {
+        <tr>
+            <td>@item.ID</td>
+            <td>@item.Name</td>
+            <td>@item.ImageURl</td>
+        </tr>
+    }
+</table>
+
