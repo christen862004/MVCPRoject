@@ -1,0 +1,16 @@
+﻿@* @using MVCPRoject.ViewModel *@
+@model EmployeeWitColorMsgBrachNamesViewModel
+@{
+    ViewData["Title"] = "testMixDataUsingVM";
+}
+
+<h1>testMixDataUsingVM</h1>
+<h2 style="background-color:@Model.Color" >@Model.EmpName</h2>
+<h3>@(Model.Temp+10)</h3>
+<select class="form form-control">
+    @foreach (var item in Model.Branches)
+    {
+        <option>@item</option>
+    }
+</select>
+

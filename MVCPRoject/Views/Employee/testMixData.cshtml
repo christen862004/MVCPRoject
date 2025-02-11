@@ -1,0 +1,44 @@
+﻿@model Employee
+@{
+    ViewData["Title"] = "testMixData";
+}
+
+<h1>testMixData</h1>
+
+<h2 style="background-color:@ViewData["Clr"]">@Model.Name</h2>
+<h2 style="background-color:@ViewBag.Clr">@Model.Name</h2>
+<hr />
+@ViewData["Msg"]
+<hr/>
+@ViewData["xyz"]
+@ViewBag.xyz
+
+
+<hr />
+@(int.Parse(ViewData["Temp"].ToString())+10)
+
+
+
+@(ViewBag.Temp + 10)
+<hr />
+<select class="form form-control">
+    @foreach (var item in ViewBag.Brch)
+    {
+        <option>@item</option>
+    }
+</select>
+
+<select class="form form-control">
+    @foreach (var item in (List<string>)ViewData["Brch"])
+    {
+        <option>@item</option>
+    }
+</select>
+<hr/>
+
+
+<!--
+1) Problem of Magic String   => ViewBag &&ViewData
+2) Type Casting "'unBoxing'" => ViewData
+3) exception Runtime         => ViewBag
+-->

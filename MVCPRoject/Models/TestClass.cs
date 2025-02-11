@@ -13,10 +13,35 @@
     }
     public class Child2<T> : Parant<T>
     {
-
+        public void testViewData()
+        {
+            TestClass c = new TestClass();
+            c.ViewData["name"] = "asd";
+            c.ViewData["re"] = 11;
+            string str = c.ViewData["name"].ToString();
+            string str2 = c.ViewBag.name;
+        }
     }
     public class TestClass
     {
+        int x;//memeory
+        public int X//Special type of function
+        {
+            get { return x; }
+            set { x = value; }
+        }
+                    
+        public Dictionary<string, object> ViewData;
+
+
+        public dynamic ViewBag
+        {
+            get { return ViewData; }
+        }
+
+
+
+
         public void Add(int x,int y)
         {
 
