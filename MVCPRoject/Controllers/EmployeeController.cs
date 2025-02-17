@@ -7,10 +7,64 @@ namespace MVCPRoject.Controllers
     public class EmployeeController : Controller
     {
         CompanyContext context = new CompanyContext();
-        public EmployeeController()
+        public IActionResult Edit(int id)
         {
+
+            Employee empModel=context.Employees.FirstOrDefault(e=>e.Id==id);
             
+            if (empModel != null)
+            {
+                //declare
+                EmployeeWithDeptListViewModel EmpViewModel=
+                    new EmployeeWithDeptListViewModel();
+                //mapping
+                EmpViewModel.Id = empModel.Id;
+                EmpViewModel.Name = empModel.Name;
+                EmpViewModel.Salary = empModel.Salary;
+                EmpViewModel.ImageURL = empModel.ImageURL;
+                EmpViewModel.Address = empModel.Address;
+                EmpViewModel.Jobtitle = empModel.Jobtitle;
+                EmpViewModel.DepartmentID = empModel.DepartmentID;
+
+                EmpViewModel.DeptList=context.Departments.ToList();
+                //return viewmode
+                return View("Edit", EmpViewModel);//view=Edit ,Model =EmployeeWithDeptListViewModel
+            }
+            return NotFound();
         }
+        
+        [HttpPost]
+        public IActionResult SaveEdit(EmployeeWithDeptListViewModel EmpFromReuest)
+        {
+            if(EmpFromReuest.Name != null) {
+                //old reference from datav=base
+                Employee EmpFromDatabase=
+                    context.Employees.FirstOrDefault(e => e.Id == EmpFromReuest.Id);
+                //update using new empfromreqquest
+                EmpFromDatabase.Name=EmpFromReuest.Name;
+                EmpFromDatabase.Address=EmpFromReuest.Address;
+                EmpFromDatabase.Jobtitle=EmpFromReuest.Jobtitle;
+                EmpFromDatabase.ImageURL=EmpFromReuest.ImageURL;
+                EmpFromDatabase.Salary=EmpFromReuest.Salary;
+                EmpFromDatabase.DepartmentID=EmpFromReuest.DepartmentID;
+
+                //save change
+                context.SaveChanges();
+                return RedirectToAction("Index");
+
+            }
+           
+            //VM contain Employee Data Only need to full deptList
+            EmpFromReuest.DeptList = context.Departments.ToList();
+            return View("Edit", EmpFromReuest);
+        }
+
+
+
+
+
+
+        #region Actions Details
 
         public IActionResult testMixData(int id)
         {
@@ -18,7 +72,7 @@ namespace MVCPRoject.Controllers
             string msg = "Hello FRom BackEnd";
             int temp = 10;
             string color = "blue";
-            List<string> brch=new List<string>();
+            List<string> brch = new List<string>();
             brch.Add("Assiut");
             brch.Add("Cairo");
             brch.Add("Alex");
@@ -36,7 +90,7 @@ namespace MVCPRoject.Controllers
             Employee empModel = context.Employees.FirstOrDefault(e => e.Id == id);
             return View("testMixData", empModel);// View=testMixData   ,Model =Employee
         }
-        
+
         public IActionResult testMixDataUsingVM(int id)
         {
             //Collect data
@@ -59,9 +113,11 @@ namespace MVCPRoject.Controllers
             EmpVM.Temp = temp;
             EmpVM.Branches = brch;
 
-            return View("testMixDataUsingVM",EmpVM);//View="" ,Model =EmployeeWitColorMsgBrachNamesViewModel
+            return View("testMixDataUsingVM", EmpVM);//View="" ,Model =EmployeeWitColorMsgBrachNamesViewModel
         }
 
+
+        #endregion
 
         #region 
         public IActionResult Index()
