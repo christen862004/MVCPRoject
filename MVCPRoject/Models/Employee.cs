@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Cors;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVCPRoject.Models
 {
@@ -12,6 +14,7 @@ namespace MVCPRoject.Models
         public string? Jobtitle { get; set; }
         
         [ForeignKey("Department")]
+        [Display(Name="Department Name")]
         public int DepartmentID { get; set; }//contarint Foriegn Key
 
         public Department? Department { get; set; }//navigation property not convert to column

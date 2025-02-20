@@ -4,11 +4,27 @@
 }
 
 <h1>Edit</h1>
+<!--Pure HTML-->
+<a href="/Employee/Index">Back To List</a><br />
+<a href="/Employee/Details/@Model.Id">DEtails Link</a><br />
+<!--Pure C#-->
+@Html.ActionLink("Back To List","Index","Employee")
+<br />
+@Html.ActionLink("Details", "Details","Employee",new {id=Model.Id,dept=Model.DepartmentID})
+<hr />
+<a asp-action="Index" asp-controller="Employee">Back To List</a>
+<a asp-action="Details" asp-controller="Employee" asp-route-ID="@Model.Id" asp-route-age="10">Detials</a>
 
 <form method="post" action="/Employee/SaveEdit/@Model.Id">
+   @* @Html.AntiForgeryToken() *@
     <div>
-        <label>Name</label>
-        <input type="text" id="Name" name="Name" value="@Model.Name" class="form form-control" />
+        <!--tag helper-->
+        <label asp-for="Name"></label>
+        <input class="form form-control" asp-for="Name"/> 
+       
+        @* @Html.LabelFor(e => e.Name) *@
+        @* @Html.EditorFor(e=>e.Name) *@
+        
     </div>
     <div>
         <label>Address</label>
@@ -47,3 +63,13 @@
     <input type="submit" value="Save" class="btn btn-success" />    
 </form>
 <a href="/Employee/Index">Back To List</a>
+
+
+<!--Pure HTML-->
+@* <label>Name</label> *@
+@* <input type="text" id="Name" name="Name" value="@Model.Name" class="form form-control" /> *@
+<!--HTML Helpers C#-->
+<!--Lossly Type Helper-->
+@* @Html.TextBox("Name", null, new { style = "color:red;",@class="form form-control"}) *@
+<!--View Strong Type View you can used Strong type Helper-->
+@* @Html.TextBoxFor(e => e.Name, new { style = "color:red;", @class = "form form-control" }) *@

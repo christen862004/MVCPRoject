@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCPRoject.Models;
 using MVCPRoject.ViewModel;
 
@@ -7,7 +8,33 @@ namespace MVCPRoject.Controllers
     public class EmployeeController : Controller
     {
         CompanyContext context = new CompanyContext();
-        public IActionResult Edit(int id)
+        public IActionResult New()
+        {
+           // IEnumerable<SelectListItem> dept = context.Departments.ToList();
+            //ViewData["DeptList"] =new SelectList( context.Departments.ToList(),"Id","Name");
+            ViewData["DeptList"] = context.Departments.ToList();
+            return View("New");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]//check reuq key =_verfiyReqquestToke
+        //handel only internel req [external requet forieg]
+        public IActionResult SaveNew(Employee EmpFromRequest)
+        {
+            if(EmpFromRequest.Name!=null&& EmpFromRequest.Salary >= 10000)
+            {
+                context.Employees.Add(EmpFromRequest);
+                context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            //////////////////////////////////
+            ViewData["DeptList"] = context.Departments.ToList();
+            return View("New", EmpFromRequest);
+        }
+
+
+        #region Edit
+   public IActionResult Edit(int id)
         {
 
             Employee empModel=context.Employees.FirstOrDefault(e=>e.Id==id);
@@ -60,10 +87,8 @@ namespace MVCPRoject.Controllers
         }
 
 
-
-
-
-
+        #endregion
+     
         #region Actions Details
 
         public IActionResult testMixData(int id)
