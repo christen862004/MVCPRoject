@@ -21,6 +21,6 @@ namespace MVCPRoject.ViewModel
         [Display(Name ="Departemtn Name")]
         public int DepartmentID { get; set; }
         
-        public List<Department> DeptList { get; set; }
+        public List<Department>? DeptList { get; set; }
     }
 }

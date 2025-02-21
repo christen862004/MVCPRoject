@@ -8,8 +8,26 @@ namespace MVCPRoject.Controllers
     public class EmployeeController : Controller
     {
         CompanyContext context = new CompanyContext();
+
+        public IActionResult CheckSalary(int Salary ,string Address) {
+            if (Address == "Alex")
+            {
+                if (Salary % 3 == 0)
+                {
+                    return Json(true);
+                }
+                else
+                {
+                    return Json(false);
+                }
+            }
+            return Json(true);
+        }
+
+        #region New
         public IActionResult New()
         {
+            
            // IEnumerable<SelectListItem> dept = context.Departments.ToList();
             //ViewData["DeptList"] =new SelectList( context.Departments.ToList(),"Id","Name");
             ViewData["DeptList"] = context.Departments.ToList();
@@ -17,24 +35,33 @@ namespace MVCPRoject.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]//check reuq key =_verfiyReqquestToke
-        //handel only internel req [external requet forieg]
+        [ValidateAntiForgeryToken]
         public IActionResult SaveNew(Employee EmpFromRequest)
         {
-            if(EmpFromRequest.Name!=null&& EmpFromRequest.Salary >= 10000)
+            if(ModelState.IsValid==true)
             {
-                context.Employees.Add(EmpFromRequest);
-                context.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    context.Employees.Add(EmpFromRequest);
+                    context.SaveChanges();
+                    return RedirectToAction("Index");
+                }catch(Exception ex)
+                {
+                    //1) custom error limitied in this action
+                    // ModelState.AddModelError("DepartmentID", "Please Select DEpartment");//Span DepartmentID
+                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);//more General display Div
+                }
             }
             //////////////////////////////////
             ViewData["DeptList"] = context.Departments.ToList();
             return View("New", EmpFromRequest);
         }
 
+        #endregion
+
 
         #region Edit
-   public IActionResult Edit(int id)
+        public IActionResult Edit(int id)
         {
 
             Employee empModel=context.Employees.FirstOrDefault(e=>e.Id==id);
