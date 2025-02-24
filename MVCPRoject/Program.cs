@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using MVCPRoject.Models;
+using MVCPRoject.Repository;
+
 namespace MVCPRoject
 {
     public class Program
@@ -7,7 +11,25 @@ namespace MVCPRoject
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            //Built in service (service alread register)
+            //built in service need to register
+
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<CompanyContext>(options=>
+            {
+                //appsetting
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Cs")); 
+            });
+            
+            
+            //custom Service need to register
+            builder.Services.AddScoped<IRepository<Employee>, EmployeeRepository>();
+            builder.Services.AddScoped<IRepository<Department>, DepartmentRepository>();
+
+
+
+
+
 
             var app = builder.Build();
 
@@ -43,13 +65,24 @@ namespace MVCPRoject
             }
             app.UseStaticFiles();
 
-            app.UseRouting(); //Mapping
+            app.UseRouting(); //Mapping (Securte ) 
 
             app.UseAuthorization();
-
+            //define route + Execute (Staff)
+            //NAmed Convertion route
+            //app.MapControllerRoute(
+            //  name: "route1",
+            //  pattern: "{controller=Home}/{action=Index}"//search action 
+            //  );
+            //{name:alpha}/{age:int:range(10,40)}",
+            //app.MapControllerRoute(
+            // name: "route2",
+            // pattern: "m2",
+            // new { controller = "Route", action = "Method2" });
+            //---------------------------------------------------
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Employee}/{action=Index}/{id?}");
                
             #endregion
 

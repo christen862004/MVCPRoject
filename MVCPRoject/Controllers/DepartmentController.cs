@@ -1,14 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MVCPRoject.Models;
+using MVCPRoject.Repository;
 
 namespace MVCPRoject.Controllers
 {
+    //DIP (dont mae high Level Cals  Based On Low LEvel Class =>Interf
     public class DepartmentController : Controller
     {
-        CompanyContext context = new CompanyContext();
+        //DIP
+        IRepository<Department> departmentRepository;
+        //DI as not create
+        public DepartmentController(IRepository<Department> deptREpo)//container service provider
+        {
+            departmentRepository = deptREpo;
+        }
+
         public IActionResult Index()//action
         {
-            List<Department> DeptsModel = context.Departments.ToList();
+            List<Department> DeptsModel = departmentRepository.GetAll();
             return View("Index",DeptsModel);//View= Index,Model List<department>
         }
         //Link 
@@ -26,8 +35,8 @@ namespace MVCPRoject.Controllers
         {
             if (deptFromRequest.Name != null)
             {
-                context.Add(deptFromRequest);//memory
-                context.SaveChanges();//database
+                departmentRepository.Insert(deptFromRequest);//memory
+                departmentRepository.Save();
                 return RedirectToAction("Index");//call action
                                                     //return View("Index",context.Departments.ToList());
             }

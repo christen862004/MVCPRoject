@@ -1,0 +1,14 @@
+﻿@using MVCPRoject.Repository
+@inject IRepository<Department> DeptREpo
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<h3>Service ID FRom Controller</h3>
+<h4>@ViewBag.ID</h4>
+<hr />
+<h3>Service ID FRom View</h3>
+<h4>@DeptREpo.ID</h4>
+

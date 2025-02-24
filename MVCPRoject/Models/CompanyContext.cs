@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.CodeDom;
 
 namespace MVCPRoject.Models
 {
@@ -9,6 +10,10 @@ namespace MVCPRoject.Models
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Department> Departments { get; set; }
         public CompanyContext():base()
+        {      
+        }
+        //constructor that used by IOC Container
+        public CompanyContext(DbContextOptions<CompanyContext> option):base(option)//ioc container
         {
             
         }

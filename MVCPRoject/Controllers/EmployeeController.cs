@@ -1,13 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCPRoject.Models;
+using MVCPRoject.Repository;
 using MVCPRoject.ViewModel;
 
 namespace MVCPRoject.Controllers
 {
+    //ControllerFactory
     public class EmployeeController : Controller
     {
-        CompanyContext context = new CompanyContext();
+        // CompanyContext context = new CompanyContext();
+        IRepository<Employee> EmployeeRepository;
+        IRepository<Department> DepartmentRepository;
+        //Design pattern Dependeny injection "dont create ,inject ask Constructor"
+        public EmployeeController
+            (IRepository<Employee> empRepo, IRepository<Department> deptRepo)
+        {
+            EmployeeRepository = empRepo;// new EmployeeRepository();
+            DepartmentRepository = deptRepo;// new DepartmentRepository();
+        }
 
         public IActionResult CheckSalary(int Salary ,string Address) {
             if (Address == "Alex")
@@ -27,10 +38,10 @@ namespace MVCPRoject.Controllers
         #region New
         public IActionResult New()
         {
-            
-           // IEnumerable<SelectListItem> dept = context.Departments.ToList();
+
+            // IEnumerable<SelectListItem> dept = context.Departments.ToList();
             //ViewData["DeptList"] =new SelectList( context.Departments.ToList(),"Id","Name");
-            ViewData["DeptList"] = context.Departments.ToList();
+            ViewData["DeptList"] = DepartmentRepository.GetAll();//context.Departments.ToList();
             return View("New");
         }
 
@@ -42,8 +53,9 @@ namespace MVCPRoject.Controllers
             {
                 try
                 {
-                    context.Employees.Add(EmpFromRequest);
-                    context.SaveChanges();
+                    EmployeeRepository.Insert(EmpFromRequest);
+                    EmployeeRepository.Save();
+                    
                     return RedirectToAction("Index");
                 }catch(Exception ex)
                 {
@@ -53,7 +65,7 @@ namespace MVCPRoject.Controllers
                 }
             }
             //////////////////////////////////
-            ViewData["DeptList"] = context.Departments.ToList();
+            ViewData["DeptList"] = DepartmentRepository.GetAll();
             return View("New", EmpFromRequest);
         }
 
@@ -64,7 +76,7 @@ namespace MVCPRoject.Controllers
         public IActionResult Edit(int id)
         {
 
-            Employee empModel=context.Employees.FirstOrDefault(e=>e.Id==id);
+            Employee empModel=EmployeeRepository.GetByID(id);
             
             if (empModel != null)
             {
@@ -80,7 +92,7 @@ namespace MVCPRoject.Controllers
                 EmpViewModel.Jobtitle = empModel.Jobtitle;
                 EmpViewModel.DepartmentID = empModel.DepartmentID;
 
-                EmpViewModel.DeptList=context.Departments.ToList();
+                EmpViewModel.DeptList=DepartmentRepository.GetAll();
                 //return viewmode
                 return View("Edit", EmpViewModel);//view=Edit ,Model =EmployeeWithDeptListViewModel
             }
@@ -92,8 +104,7 @@ namespace MVCPRoject.Controllers
         {
             if(EmpFromReuest.Name != null) {
                 //old reference from datav=base
-                Employee EmpFromDatabase=
-                    context.Employees.FirstOrDefault(e => e.Id == EmpFromReuest.Id);
+                Employee EmpFromDatabase=  EmployeeRepository.GetByID(EmpFromReuest.Id);
                 //update using new empfromreqquest
                 EmpFromDatabase.Name=EmpFromReuest.Name;
                 EmpFromDatabase.Address=EmpFromReuest.Address;
@@ -103,13 +114,13 @@ namespace MVCPRoject.Controllers
                 EmpFromDatabase.DepartmentID=EmpFromReuest.DepartmentID;
 
                 //save change
-                context.SaveChanges();
+                EmployeeRepository.Save();
                 return RedirectToAction("Index");
 
             }
            
             //VM contain Employee Data Only need to full deptList
-            EmpFromReuest.DeptList = context.Departments.ToList();
+            EmpFromReuest.DeptList = DepartmentRepository.GetAll();
             return View("Edit", EmpFromReuest);
         }
 
@@ -139,7 +150,7 @@ namespace MVCPRoject.Controllers
             // override blues
 
 
-            Employee empModel = context.Employees.FirstOrDefault(e => e.Id == id);
+            Employee empModel = EmployeeRepository.GetByID(id);//context.Employees.FirstOrDefault(e => e.Id == id);
             return View("testMixData", empModel);// View=testMixData   ,Model =Employee
         }
 
@@ -154,7 +165,7 @@ namespace MVCPRoject.Controllers
             brch.Add("Cairo");
             brch.Add("Alex");
             brch.Add("Mansuora");
-            Employee EmpModel = context.Employees.FirstOrDefault(e => e.Id == id);
+            Employee EmpModel = EmployeeRepository.GetByID(id);
             //mapping takke collect ==>VM
             EmployeeWitColorMsgBrachNamesViewModel EmpVM =
                 new EmployeeWitColorMsgBrachNamesViewModel();
@@ -175,7 +186,7 @@ namespace MVCPRoject.Controllers
         public IActionResult Index()
         {
             List<Employee> EmpListModel=
-                context.Employees.ToList();
+                EmployeeRepository.GetAll();
 
             return View("Index",EmpListModel);//view =Index ,Model =List<Employee>
         }
@@ -183,7 +194,7 @@ namespace MVCPRoject.Controllers
         public IActionResult DEtails(int id)
         {
             //SingleOrDefault | FirstOrDefault
-            Employee EmpModel = context.Employees.FirstOrDefault(d=>d.Id==id);
+            Employee EmpModel = EmployeeRepository.GetByID(id);
             return View("DEtails",EmpModel);//View=DEtails ,Model Type "Employee"
         }
         #endregion
