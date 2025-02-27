@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCPRoject.Models;
 using MVCPRoject.Repository;
@@ -7,6 +9,7 @@ using MVCPRoject.ViewModel;
 namespace MVCPRoject.Controllers
 {
     //ControllerFactory
+    
     public class EmployeeController : Controller
     {
         // CompanyContext context = new CompanyContext();
@@ -16,6 +19,7 @@ namespace MVCPRoject.Controllers
         public EmployeeController
             (IRepository<Employee> empRepo, IRepository<Department> deptRepo)
         {
+            
             EmployeeRepository = empRepo;// new EmployeeRepository();
             DepartmentRepository = deptRepo;// new DepartmentRepository();
         }
@@ -183,6 +187,7 @@ namespace MVCPRoject.Controllers
         #endregion
 
         #region 
+        [Authorize]//check cookie
         public IActionResult Index()
         {
             List<Employee> EmpListModel=

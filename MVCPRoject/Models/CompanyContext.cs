@@ -9,6 +9,7 @@ namespace MVCPRoject.Models
     {
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<UserAccount> UserAccounts { get; set; }
         public CompanyContext():base()
         {      
         }
